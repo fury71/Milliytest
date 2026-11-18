@@ -406,7 +406,7 @@ async def cmd_start(message: Message, command: CommandObject, bot: Bot):
       web_app=WebAppInfo(url="https://milliytest.onrender.com"),
   )
   markup = InlineKeyboardMarkup(inline_keyboard=[[web_app_btn]])
-    welcome_text = f"""👋 Assalomu alaykum, {message.from_user.first_name} ustoz!
+  welcome_text = f"""👋 Assalomu alaykum, {message.from_user.first_name} ustoz!
 
 🎯 **BEPUL Testlar**
 Fan, pedagogik mahorat va kasb standarti testlari – har bir savolning yechilish usuli bilan.
