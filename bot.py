@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import sys
+from pathlib import Path
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.filters import Command
 from aiogram.types import (
@@ -21,9 +22,15 @@ dp = Dispatcher()
 router = Router()
 dp.include_router(router)
 
-# --- Veb-server (Render va UptimeRobot uchun 404 chiqmasligi uchun) ---
+# Papka yo'lini aniqlaymiz
+BASE_DIR = Path(__file__).resolve().parent
+
+# --- Veb-server (index.html ni ochish uchun) ---
 async def handle_root(request):
-    return web.Response(text="Milliy Test Web App is running successfully!", content_type="text/html")
+    html_path = BASE_DIR / "index.html"
+    if html_path.exists():
+        return web.FileResponse(html_path)
+    return web.Response(text="index.html fayli topilmadi!", content_type="text/html")
 
 async def start_web_server():
     app = web.Application()
