@@ -396,31 +396,6 @@ async def check_subscription(user_id: int, bot: Bot) -> bool:
 # Handlerlar: /start va asosiy menyu
 @router.message(CommandStart())
 async def cmd_start(message: Message, command: CommandObject, bot: Bot):
-  is_subscribed = await check_subscription(message.from_user.id, bot)
-
-  if not is_subscribed:
-    sub_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="📢 Kanalga a'zo bo'lish",
-                    url=f"https://t.me/{CHANNEL_USERNAME.lstrip('@')}",
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="✅ A'zo bo'ldim", callback_data="check_sub"
-                )
-            ],
-        ]
-    )
-    await message.answer(
-        "❌ **Botdan foydalanish uchun avval kanalimizga a'zo bo'ling:**\n\n"
-        f"👉 {CHANNEL_USERNAME}\n\n"
-        "A'zo bo'lgach, **'✅ A'zo bo'ldim'** tugmasini bosing.",
-        reply_markup=sub_markup,
-    )
-    return
 
   arg = command.args or ""
   await register_user(bot, message.from_user, arg)
@@ -432,9 +407,9 @@ async def cmd_start(message: Message, command: CommandObject, bot: Bot):
   )
   markup = InlineKeyboardMarkup(inline_keyboard=[[web_app_btn]])
 
-  welcome_text = (
-      f"👋 **Assalomu alaykum, {message.from_user.first_name} ustoz!**\n\n"
-      "🎯 **BEPUL Testlar**\n"
+  welcome_text = ()
+      f"👋 Assalomu alaykum, {message.from_user.first_name} ustoz!**\n\n"
+      "🎯 BEPUL Testlar\n"
       "Fan, pedagogik mahorat va kasb standarti testlari – har bir "
       "savolning yechilish usuli bilan.\n\n"
       "✅ Xatoingizni darrov tushunasiz\n"
