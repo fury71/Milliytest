@@ -393,9 +393,7 @@ async def check_subscription(user_id: int, bot: Bot) -> bool:
   except Exception:
     pass
   return False
---------------------------------------------------------------------------- #
 # Handlerlar: /start va asosiy menyu
-# --------------------------------------------------------------------------- #
 @router.message(CommandStart())
 async def cmd_start(message: Message, command: CommandObject, bot: Bot):
   is_subscribed = await check_subscription(message.from_user.id, bot)
