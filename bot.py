@@ -406,18 +406,18 @@ async def cmd_start(message: Message, command: CommandObject, bot: Bot):
       web_app=WebAppInfo(url="https://milliytest.onrender.com"),
   )
   markup = InlineKeyboardMarkup(inline_keyboard=[[web_app_btn]])
+    welcome_text = f"""👋 Assalomu alaykum, {message.from_user.first_name} ustoz!
 
-  welcome_text = ()
-      f"👋 Assalomu alaykum, {message.from_user.first_name} ustoz!**\n\n"
-      "🎯 BEPUL Testlar\n"
-      "Fan, pedagogik mahorat va kasb standarti testlari – har bir "
-      "savolning yechilish usuli bilan.\n\n"
-      "✅ Xatoingizni darrov tushunasiz\n"
-      "✅ Imtihondagidek vaqt va ball\n"
-      "✅ Har kuni 15 ta pedagogik mahorat testi\n"
-      "🔒 Karta yoki telefon raqam so'ralmaydi\n\n"
-      "🚀 Hoziroq 1-testni sinab ko'ring – atigi 1 daqiqa"
-  )
+🎯 **BEPUL Testlar**
+Fan, pedagogik mahorat va kasb standarti testlari – har bir savolning yechilish usuli bilan.
+
+✅ Xatoingizni darrov tushunasiz
+⏱ Imtihondagidek vaqt va ball
+📅 Har kuni 15 ta pedagogik mahorat testlari
+🔒 Karta yoki telefon raqam so'ralmaydi
+
+🚀 Hoziroq 1-testni sinab ko'ring – atigi 1 daqiqa"""
+
 
   try:
     await message.answer_animation(
