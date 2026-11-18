@@ -783,5 +783,76 @@ async def process_check_sub(callback: CallbackQuery, bot: Bot):
     await callback.answer(
         "❌ Siz hali kanalga a'zo bo'lmadingiz!", show_alert=True
     )
+    # --- Asosiy menyu klaviaturasi ---
+def main_menu_kb():
+    keyboard = [
+        [KeyboardButton(text="📚 Testlar"), KeyboardButton(text="📅 Kunlik test")],
+        [KeyboardButton(text="🎁 Taklif"), KeyboardButton(text="📊 Holat")],
+        [KeyboardButton(text="➕ Guruhga qo'shish"), KeyboardButton(text="ℹ️ Yordam")]
+    ]
+    return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
+
+# 📚 Testlar tugmasi
+@router.message(F.text == "📚 Testlar")
+async def on_tests_menu(message: Message):
+    web_app_btn = InlineKeyboardButton(
+        text="🌐 Katalog ochish (Web App)",
+        web_app=WebAppInfo(url="https://milliytest.onrender.com")
+    )
+    markup = InlineKeyboardMarkup(inline_keyboard=[[web_app_btn]])
+    await message.answer(
+        "<b>📚 Fanlar katalogi</b>\n\n"
+        "Test ishlamoqchi bo'lgan fanni tanlang yoki test kodini yuboring (masalan: <code>#AB12CD</code>).",
+        reply_markup=markup
+    )
+
+# 📅 Kunlik test tugmasi
+@router.message(F.text == "📅 Kunlik test")
+async def on_daily_test(message: Message):
+    await message.answer("📅 Bugungi kunlik test yuklanmoqda... Tayyor turing!")
+
+# 🎁 Taklif tugmasi
+@router.message(F.text == "🎁 Taklif")
+async def on_referral(message: Message):
+    bot_info = await message.bot.get_me()
+    ref_link = f"https://t.me/{bot_info.username}?start=ref_{message.from_user.id}"
+    await message.answer(
+        f"<b>🎁 Do'stlaringizni taklif qiling!</b>\n\n"
+        f"Maxsus havolangiz orqali do'stlaringizni botga taklif qiling va ballar jamg'aring:\n\n"
+        f"<code>{ref_link}</code>"
+    )
+
+# 📊 Holat tugmasi
+@router.message(F.text == "📊 Holat")
+async def on_status(message: Message):
+    await message.answer(
+        f"<b>📊 Sizning statistikangiz:</b>\n\n"
+        f"👤 Ism: {message.from_user.first_name}\n"
+        f"🏆 To'plangan ballar: 0 ball\n"
+        f"📝 Ishlangan testlar: 0 ta"
+    )
+
+# ➕ Guruhga qo'shish tugmasi
+@router.message(F.text == "➕ Guruhga qo'shish")
+async def on_add_to_group(message: Message):
+    bot_info = await message.bot.get_me()
+    group_link = f"https://t.me/{bot_info.username}?startgroup=true"
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="➕ Guruhga qo'shish", url=group_link)]
+    ])
+    await message.answer(
+        "🤖 Botni guruhga qo'shing va do'stlaringiz bilan birgalikda test yeching!",
+        reply_markup=kb
+    )
+
+# ℹ️ Yordam tugmasi
+@router.message(F.text == "ℹ️ Yordam")
+async def on_help_menu(message: Message):
+    await message.answer(
+        "<b>ℹ️ Yordam markazi</b>\n\n"
+        "Agar botdan foydalanishda savollar yoki xatoliklar yuzaga kelsa, adminga murojaat qiling."
+    )
+
+# Botni ishga tushirish (Har doim eng oxirida turishi shart)
 if __name__ == "__main__":
-  asyncio.run(main())
+    asyncio.run(main())
