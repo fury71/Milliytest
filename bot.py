@@ -55,7 +55,9 @@ ADMIN_IDS = {int(x) for x in os.getenv("ADMIN_IDS", "").split(",") if x.strip().
 DB_PATH = os.getenv("DB_PATH", str(BASE_DIR / "data" / "bot.db"))
 PORT = int(os.getenv("PORT", "8080"))
 
-REFERRALS_REQUIRED = 4          # Premium fanlarni ochish uchun kerakli takliflar
+REFERRALS_REQUIRED = 4 
+CHANNEL_USERNAME = "@MilliyTestlarUz" 
+# Premium fanlarni ochish uchun kerakli takliflar
 LETTERS = ["A", "B", "C", "D"]
 CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # chalkash harflarsiz
 
@@ -383,11 +385,45 @@ async def safe_edit(message: Message, text: str, kb: InlineKeyboardMarkup | None
             raise
 
 
-# --------------------------------------------------------------------------- #
+async def check_subscription(user_id: int, bot: Bot) -> bool:
+  try:
+    member = await bot.get_chat_member(chat_id=CHANNEL_USERNAME, user_id=user_id)
+    if member.status in ["member", "administrator", "creator"]:
+      return True
+  except Exception:
+    pass
+  return False
+--------------------------------------------------------------------------- #
 # Handlerlar: /start va asosiy menyu
 # --------------------------------------------------------------------------- #
 @router.message(CommandStart())
-async def cmd_start(message: Message, command: CommandObject):
+async def cmd_start(message: Message, command: CommandObject, bot: Bot):
+  is_subscribed = await check_subscription(message.from_user.id, bot)
+
+  if not is_subscribed:
+    sub_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="📢 Kanalga a'zo bo'lish",
+                    url=f"https://t.me/{CHANNEL_USERNAME.lstrip('@')}",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="✅ A'zo bo'ldim", callback_data="check_sub"
+                )
+            ],
+        ]
+    )
+    await message.answer(
+        "❌ **Botdan foydalanish uchun avval kanalimizga a'zo bo'ling:**\n\n"
+        f"👉 {CHANNEL_USERNAME}\n\n"
+        "A'zo bo'lgach, **'✅ A'zo bo'ldim'** tugmasini bosing.",
+        reply_markup=sub_markup,
+    )
+    return
+
   arg = command.args or ""
   await register_user(bot, message.from_user, arg)
 
@@ -759,8 +795,20 @@ async def main():
     finally:
         await runner.cleanup()
         await db.close()
-        await bot.session.close()
+        await bot.session.close(
 
+@router.callback_query(F.data == "check_sub")
+async def process_check_sub(callback: CallbackQuery, bot: Bot):
+  is_subscribed = await check_subscription(callback.from_user.id, bot)
 
+  if is_subscribed:
+    await callback.message.answer(
+        "Rahmat! Obunangiz tasdiqlandi. Endi /start buyrug'ini yuboring."
+    )
+    await callback.message.delete()
+  else:
+    await callback.answer(
+        "❌ Siz hali kanalga a'zo bo'lmadingiz!", show_alert=True
+    )
 if __name__ == "__main__":
-    asyncio.run(main())
+  asyncio.run(main())
