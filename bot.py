@@ -793,7 +793,7 @@ async def main():
     finally:
         await runner.cleanup()
         await db.close()
-        await bot.session.close(
+        await bot.session.close()
 
 @router.callback_query(F.data == "check_sub")
 async def process_check_sub(callback: CallbackQuery, bot: Bot):
