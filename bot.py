@@ -387,13 +387,41 @@ async def safe_edit(message: Message, text: str, kb: InlineKeyboardMarkup | None
 # Handlerlar: /start va asosiy menyu
 # --------------------------------------------------------------------------- #
 @router.message(CommandStart())
-async def cmd_start(message: Message, command: CommandObject, bot: Bot):
-    arg = command.args or ""
-    await register_user(bot, message.from_user, arg)
-    await message.answer(WELCOME.format(name=esc(message.from_user.first_name)),
-                         reply_markup=main_menu())
-    if arg.startswith("test_"):                       # Web App yoki havoladan kelgan test
-        await open_test_by_code(message, arg[5:])
+async def cmd_start(message: Message, command: CommandObject):
+  arg = command.args or ""
+  await register_user(bot, message.from_user, arg)
+
+  # Web App tugmasi va chiroyli matn
+  web_app_btn = InlineKeyboardButton(
+      text="📝 Testlarni boshlash",
+      web_app=WebAppInfo(url="https://milliytest.onrender.com"),
+  )
+  markup = InlineKeyboardMarkup(inline_keyboard=[[web_app_btn]])
+
+  welcome_text = (
+      f"👋 **Assalomu alaykum, {message.from_user.first_name} ustoz!**\n\n"
+      "🎯 **BEPUL Testlar**\n"
+      "Fan, pedagogik mahorat va kasb standarti testlari – har bir "
+      "savolning yechilish usuli bilan.\n\n"
+      "✅ Xatoingizni darrov tushunasiz\n"
+      "✅ Imtihondagidek vaqt va ball\n"
+      "✅ Har kuni 15 ta pedagogik mahorat testi\n"
+      "🔒 Karta yoki telefon raqam so'ralmaydi\n\n"
+      "🚀 Hoziroq 1-testni sinab ko'ring – atigi 1 daqiqa"
+  )
+
+  try:
+    await message.answer_animation(
+        animation="CgACAgIAAxkBAAE...",
+        caption=welcome_text,
+        reply_markup=markup,
+    )
+  except Exception:
+    await message.answer(welcome_text, reply_markup=markup)
+
+  if arg.startswith("test_"):
+    await open_test_by_code(message, arg[5:])
+
 
 
 @router.message(Command("help"))
