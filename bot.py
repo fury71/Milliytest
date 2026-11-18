@@ -14,7 +14,7 @@ from aiogram.types import (
 from aiohttp import web
 
 # Tokeningiz
-TOKEN = "7910123659:AAGkS615fQ4uKz7Z9o9V9O8p6mZ8xQ2v1nQ"
+TOKEN = "9253591298:AAHTxeBAfMCJPkOUtkSawjZt_JeYH8p4RVE"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
