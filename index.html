@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Milliy Testlar</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#0f1830; --gold:#f2b01e; --gold2:#b87a0a; --gold-d:#3a1b06;
+  --glass:rgba(255,255,255,.055); --glass-b:rgba(255,255,255,.11);
+  --tx:#f3f1ec; --mut:#9a978f; --ok:#35c46a; --bad:#e5484d;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",Roboto,sans-serif;min-height:100%;overscroll-behavior:none}
+body{padding-bottom:110px;background:linear-gradient(180deg,#0d1630 0%,#111b36 100%) fixed}
+.glass{background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07)}
+header{display:flex;align-items:center;justify-content:center;gap:12px;padding:18px 16px 10px;padding-top:calc(18px + env(safe-area-inset-top))}
+header .logo-t{line-height:1;text-align:left}
+header .t{font-weight:900;font-size:27px;letter-spacing:2px;background:linear-gradient(180deg,#ffd45a,#d9941a);-webkit-background-clip:text;background-clip:text;color:transparent}
+header .t2{font-weight:700;font-size:12px;letter-spacing:9px;color:#d9a73c;margin-top:5px;padding-left:2px}
+header{position:relative}
+.snd{position:absolute;right:16px;top:calc(22px + env(safe-area-inset-top));width:38px;height:38px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass);color:#fff;font-size:16px;cursor:pointer}
+header .bird{width:92px;height:46px;filter:drop-shadow(0 4px 12px rgba(242,176,30,.35))}
+.wrap{padding:6px 16px 0;max-width:640px;margin:0 auto}
+.view{display:none;animation:fi .25s ease}.view.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:22px;font-weight:700;margin:22px 4px 14px}
+.profile{border-radius:26px;padding:20px;margin-top:8px}
+.prow{display:flex;align-items:center;gap:14px}
+.av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:24px;color:#fff;background:linear-gradient(145deg,#f7b733,#c27c0c);border:2px solid rgba(255,214,120,.55);flex:none;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.pname{font-size:20px;font-weight:700}
+.badge{margin-left:auto;font-size:11px;letter-spacing:1.5px;font-weight:700;color:#ffd978;border:1px solid rgba(242,176,30,.5);border-radius:999px;padding:6px 10px;background:rgba(242,176,30,.08)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.st{padding:12px 10px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);text-align:center}
+.st small{display:block;font-size:11px;letter-spacing:1.2px;color:var(--mut);text-transform:uppercase;margin-bottom:5px}
+.st b{font-size:24px;font-weight:800;color:#fff}.st b i{font-style:normal;color:var(--gold)}
+.btn{width:100%;border:0;border-radius:18px;padding:16px;font-size:17px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(90deg,#f7b500 0%,#b87a0a 55%,#3a1708 100%);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn:active{transform:scale(.985)}
+.btn.sec{background:var(--glass);border:1px solid var(--glass-b);color:var(--tx)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{border-radius:22px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;transition:transform .15s}
+.card:active{transform:scale(.97)}
+.ic{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px rgba(0,0,0,.5);overflow:hidden;flex:none}
+.ic svg{width:34px;height:34px}.ic svg.full{width:100%;height:100%}
+.card .n{font-weight:700;font-size:15px;line-height:1.2}
+.card .d{font-size:11.5px;color:var(--mut);line-height:1.35}
+.row{display:flex;align-items:center;gap:14px;border-radius:20px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.row .ic{width:48px;height:48px;border-radius:13px}.row .ic svg{width:28px;height:28px}
+.row .m{flex:1;min-width:0}.row .n{font-weight:700;font-size:15.5px}.row .d{font-size:12px;color:var(--mut);margin-top:3px}
+.chev{color:var(--mut);font-size:22px}
+.empty{text-align:center;color:var(--mut);padding:50px 20px}
+.pill{font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.07);color:var(--mut)}
+.hs{font-weight:800;font-size:18px}
+/* nav */
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));width:min(92vw,560px);border-radius:32px;display:flex;justify-content:space-around;padding:10px 6px;z-index:20;border:1px solid rgba(242,176,30,.45);background:rgba(14,22,46,.82)}
+nav button{flex:1;background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:6px 0;cursor:pointer}
+nav button svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--gold)}
+/* sheet */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:30;display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.sheet{width:min(100%,600px);border-radius:28px 28px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));background:rgba(16,24,48,.96);animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet .hd{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.sheet .hd .ic{width:52px;height:52px}
+.opt{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:15px 16px;border-radius:16px;margin-top:10px;border:1px solid var(--glass-b);background:var(--glass);color:var(--tx);font-size:15.5px;font-weight:600;cursor:pointer}
+.opt small{color:var(--mut);font-weight:500;font-size:12px;display:block;margin-top:3px}
+.opt.gold{background:linear-gradient(90deg,rgba(247,181,0,.22),rgba(58,23,8,.35));border-color:rgba(242,176,30,.5)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px}
+/* quiz */
+#quiz{position:fixed;inset:0;background:var(--bg);z-index:40;display:none;overflow-y:auto;padding:calc(16px + env(safe-area-inset-top)) 16px 30px}
+#quiz.on{display:block}
+.qtop{display:flex;align-items:center;gap:12px;max-width:640px;margin:0 auto}
+.x{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;font-size:20px}
+.bar{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#ffdf7a);transition:width .3s}
+.qb{max-width:640px;margin:22px auto 0}
+.qmeta{display:flex;justify-content:space-between;color:var(--mut);font-size:13px;margin-bottom:12px}
+.qt{font-size:20px;font-weight:700;line-height:1.4;padding:20px;border-radius:22px;margin-bottom:16px}
+.ans{display:block;width:100%;text-align:left;padding:16px;border-radius:16px;margin-bottom:10px;border:1px solid var(--glass-b);background:var(--glass);color:var(--tx);font-size:16px;cursor:pointer}
+.ans.ok{background:rgba(53,196,106,.18);border-color:var(--ok)}
+.ans.bad{background:rgba(229,72,77,.18);border-color:var(--bad)}
+.ans:disabled{cursor:default}
+.res{max-width:640px;margin:30px auto;text-align:center}
+.ring{width:170px;height:170px;border-radius:50%;margin:20px auto;display:grid;place-items:center;font-size:40px;font-weight:800}
+.ring span{width:140px;height:140px;border-radius:50%;background:var(--bg);display:grid;place-items:center}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:rgba(30,30,33,.95);border:1px solid var(--glass-b);padding:10px 16px;border-radius:14px;font-size:13px;z-index:60;display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="bird" viewBox="330 185 880 435" aria-label="Milliy Testlar logotipi">
+    <defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6c850"/><stop offset="1" stop-color="#b57a14"/></linearGradient></defs>
+    <g fill="url(#gg)">
+      <polygon points="341,196 670,286 413,287"/>
+      <polygon points="426,302 686,302 497,373"/>
+      <polygon points="512,385 706,314 588,430"/>
+      <polygon points="1195,196 866,286 1123,287"/>
+      <polygon points="1110,302 850,302 1039,373"/>
+      <polygon points="1024,385 830,314 948,430"/>
+      <path d="M704 314 L868 448 L768 607 L666 444 L730 392 L752 411 L709 446 L768 519 L825 451 L699 348 Z"/>
+      <path d="M833 314 L836 348 L803 378 L780 358 Z"/>
+    </g>
+  </svg>
+  <div class="logo-t"><div class="t">MILLIY</div><div class="t2">TESTLAR</div></div>
+  <button class="snd" id="snd" aria-label="Ovoz" onclick="toggleSnd()">🔊</button>
+</header>
+
+<div class="wrap">
+  <!-- BOSH SAHIFA -->
+  <section class="view on" id="v-home">
+    <div class="profile glass">
+      <div class="prow">
+        <div class="av" id="av">F</div>
+        <div class="pname" id="uname">Foydalanuvchi</div>
+        <div class="badge">FAOL</div>
+      </div>
+      <div class="stats">
+        <div class="st"><small>Ballar</small><b id="s-ball">0</b></div>
+        <div class="st"><small>Ochkolar</small><b id="s-och">0</b></div>
+        <div class="st"><small>Testlar</small><b id="s-test">0</b></div>
+      </div>
+      <button class="btn" onclick="go('tests')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        Test ishlash
+      </button>
+    </div>
+    <h2>Fanlar</h2>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- TESTLAR -->
+  <section class="view" id="v-tests">
+    <h2>Testlar</h2>
+    <div id="tlist"></div>
+  </section>
+
+  <!-- TESTLAR TARIXI -->
+  <section class="view" id="v-hist">
+    <h2>Testlar tarixi</h2>
+    <div id="hlist"></div>
+  </section>
+
+  <!-- PROFIL -->
+  <section class="view" id="v-prof">
+    <div class="profile glass" style="margin-top:20px">
+      <div class="prow">
+        <div class="av" id="av2">F</div>
+        <div><div class="pname" id="uname2">Foydalanuvchi</div><div style="color:var(--mut);font-size:13px;margin-top:4px" id="uid"></div></div>
+      </div>
+      <div class="stats">
+        <div class="st"><small>Ballar</small><b id="p-ball">0</b></div>
+        <div class="st"><small>Ochkolar</small><b id="p-och">0</b></div>
+        <div class="st"><small>Testlar</small><b id="p-test">0</b></div>
+      </div>
+      <div class="stats" style="grid-template-columns:1fr 1fr">
+        <div class="st"><small>To'g'ri javoblar</small><b id="p-ok">0</b></div>
+        <div class="st"><small>O'rtacha natija</small><b id="p-avg">0%</b></div>
+      </div>
+    </div>
+    <p style="color:var(--mut);font-size:13px;margin:16px 6px;line-height:1.5">Ball = to'g'ri javoblar soni. Ochko: oson +1, o'rtacha +2, qiyin +3 (har bir to'g'ri javob uchun).</p>
+    <button class="btn sec" onclick="resetAll()">Natijalarni tozalash</button>
+  </section>
+</div>
+
+<nav class="glass">
+  <button data-v="home" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>Bosh sahifa</button>
+  <button data-v="tests"><svg viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><rect x="5" y="6" width="14" height="15" rx="2.5"/><path d="M9 12l2 2 4-4M9 17h6"/></svg>Testlar</button>
+  <button data-v="hist"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Testlar tarixi</button>
+  <button data-v="prof"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>Profil</button>
+</nav>
+
+<!-- Fan tanlash oynasi -->
+<div class="ov" id="ov" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<!-- Test oynasi -->
+<div id="quiz"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== SOZLAMALAR ================== */
+// Aralash test tarkibi (jami 50 ta). Kerak bo'lsa shu yerda o'zgartiring.
+const COMP = {e:20, m:10, h:20};
+const POOL = 30; // har bir qiyinlik ichida 30 tadan savol
+const LV = {e:["Oson","#35c46a"], m:["O'rtacha","#f2b01e"], h:["Qiyin","#e5484d"]};
+const DESC = `${COMP.e+COMP.m+COMP.h} ta savol (${COMP.e} ta oson, ${COMP.m} ta o'rtacha, ${COMP.h} ta qiyin)`;
+
+/* ================== FANLAR ================== */
+const S = [
+ {id:"mat",name:"Matematika",g:["#e0a52a","#85550a"],ic:'<path d="M5 7h14M9 7c0 6-.5 10-3 12M15 7c0 4 0 9 3.5 12"/>'},
+ {id:"fiz",name:"Fizika",g:["#2f5fd0","#1a2f78"],ic:'<circle cx="12" cy="12" r="1.8" fill="#fff"/><ellipse cx="12" cy="12" rx="9" ry="3.8"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(120 12 12)"/>'},
+ {id:"kim",name:"Kimyo",g:["#8a47c9","#4a1f7a"],ic:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3M7.5 15h9"/>'},
+ {id:"bio",name:"Biologiya",g:["#2f9e5b","#14572f"],ic:'<path d="M5 19c0-9 5-14 14-14 0 9-5 14-14 14zM5 19l8-8"/>'},
+ {id:"geo",name:"Geografiya",g:["#1f8fa6","#0d4a5a"],ic:'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.5 7.5h15M4.5 16.5h15"/>'},
+ {id:"inf",name:"Informatika va AT",g:["#3a3f4a","#16181e"],ic:'<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/>'},
+ {id:"ona",name:"Ona tili va adabiyot",g:["#c2553a","#702a18"],ic:'<path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/>'},
+ {id:"uzt",name:"O'zbek tili",g:["#1e7fd6","#0f3f78"],ic:'<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>'},
+ {id:"uzb",name:"O'zbekiston tarixi",g:["#b0852a","#5c3f0c"],ic:'<path d="M3 9l9-5 9 5M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/>'},
+ {id:"jah",name:"Jahon tarixi",g:["#7a5b3a","#3b2a18"],ic:'<path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/>'},
+ {id:"ing",name:"Ingliz tili",g:["#c23a52","#6b1626"],ic:'<path d="M4 5h16v11H9l-5 4z"/><path d="M9.5 13l2.5-6 2.5 6M10.5 11h3"/>'},
+ {id:"ped",name:"Pedagogika va psixologiya",g:["#d4793a","#7a3a0e"],ic:'<path d="M2 9l10-5 10 5-10 5zM6 11v5c3 2.4 9 2.4 12 0v-5"/>'},
+ {id:"kas",name:"Kasb standarti va metodika",g:["#4a5a78","#222b3d"],ic:'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V5h6v3M3 13h18"/>'},
+ {id:"huq",name:"Huquq asoslari",g:["#5a4a9e","#2a2158"],ic:'<path d="M12 4v16M6 20h12M7 8h10M7 8l-3 6a3 3 0 0 0 6 0zM17 8l-3 6a3 3 0 0 0 6 0z"/>'},
+ {id:"iqt",name:"Iqtisodiyot",g:["#1f9d86","#0c4f43"],ic:'<path d="M4 4v16h16M8 15v-3M12 15V8M16 15v-5M7 9l4-3 3 2 4-4"/>'},
+ {id:"pra",name:"Yo'l harakati qoidalari (Prava)",g:["#3d4350","#15181f"],ic:'<rect x="8" y="3" width="8" height="18" rx="2"/><circle cx="12" cy="7.5" r="1.7" fill="#ff5a52" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="#ffc83d" stroke="none"/><circle cx="12" cy="16.5" r="1.7" fill="#3ddc7a" stroke="none"/>'}
+];
+
+function icon(s){
+  return `<div class="ic" style="background:linear-gradient(145deg,${s.g[0]},${s.g[1]})"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${s.ic}</svg></div>`;
+}
+
+/* ================== SAVOLLAR BANKI ================== */
+/* Format: [savol, [variantlar], to'g'ri_javob_indeksi] */
+const B = {
+ fiz:{e:[["Kuch birligi SI tizimida?",["Nyuton","Joul","Vatt","Paskal"],0],["Yorug'likning vakuumdagi tezligi taxminan?",["3·10⁸ m/s","3·10⁶ m/s","3·10⁵ m/s","300 m/s"],0]],
+      m:[["m=2 kg, a=3 m/s² bo'lsa, kuch F=?",["6 N","5 N","1.5 N","12 N"],0],["Ohm qonuni: I=2 A, R=5 Ω bo'lsa U=?",["10 V","2.5 V","7 V","3 V"],0]],
+      h:[["m=2 kg, v=3 m/s jismning kinetik energiyasi?",["9 J","6 J","18 J","3 J"],0],["Erkin tushish tezlanishi taxminan?",["9.8 m/s²","98 m/s²","0.98 m/s²","1.6 m/s²"],0]]},
+ kim:{e:[["Suvning kimyoviy formulasi?",["H₂O","CO₂","NaCl","O₂"],0],["Osh tuzining formulasi?",["NaCl","KCl","CaCO₃","NaOH"],0]],
+      m:[["Natriyning nisbiy atom massasi taxminan?",["23","11","35","40"],0],["pH < 7 bo'lsa, muhit qanday?",["Kislotali","Neytral","Ishqoriy","Tuzli"],0]],
+      h:[["Normal sharoitda 1 mol gaz hajmi?",["22,4 l","11,2 l","44,8 l","1 l"],0],["H₂SO₄ ning molyar massasi?",["98 g/mol","96 g/mol","64 g/mol","100 g/mol"],0]]},
+ bio:{e:[["Hujayraning energiya stansiyasi?",["Mitoxondriya","Yadro","Ribosoma","Vakuola"],0],["Fotosintez qaysi organoidda boradi?",["Xloroplast","Mitoxondriya","Lizosoma","Yadrocha"],0]],
+      m:[["Odam somatik hujayrasida xromosomalar soni?",["46","23","44","48"],0],["DNKdagi azotli asoslar?",["A, T, G, C","A, U, G, C","A, T, U, C","G, C, U, T"],0]],
+      h:[["Mendelning II qonunida fenotip bo'yicha ajralish?",["3:1","1:1","9:3:3:1","1:2:1"],0],["Oqsil sintezi qaysi organoidda boradi?",["Ribosoma","Lizosoma","Golji apparati","Vakuola"],0]]},
+ geo:{e:[["O'zbekiston poytaxti?",["Toshkent","Samarqand","Buxoro","Namangan"],0],["Eng katta okean?",["Tinch okeani","Atlantika","Hind","Shimoliy Muz"],0]],
+      m:[["O'zbekistonning eng baland nuqtasi joylashgan tog' tizmasi?",["Hisor","Chotqol","Nurota","Qurama"],0],["Orol dengizi qaysi hududda joylashgan?",["Qoraqalpog'iston","Surxondaryo","Farg'ona","Navoiy"],0]],
+      h:[["Ekvator uzunligi taxminan?",["40 000 km","20 000 km","10 000 km","60 000 km"],0],["Yer qobig'i ostidagi qatlam?",["Mantiya","Yadro","Litosfera","Atmosfera"],0]]},
+ inf:{e:[["1 bayt necha bit?",["8","4","16","2"],0],["CPU qanday nomlanadi?",["Protsessor","Monitor","Xotira","Sichqoncha"],0]],
+      m:[["Ikkilik 101 sonining o'nlik ko'rinishi?",["5","3","6","7"],0],["HTML nima?",["Belgilash tili","Dasturlash tili","Operatsion tizim","Brauzer"],0]],
+      h:[["2¹⁰ nimaga teng?",["1024","512","2048","1000"],0],["SQL nima uchun ishlatiladi?",["Ma'lumotlar bazasi bilan ishlash","Rasm chizish","Video tahrir","Tarmoq sozlash"],0]]},
+ ona:{e:[["Hozirgi o'zbek lotin alifbosida nechta harf bor?",["29","32","26","30"],0],["\"Kitob\" so'zi qaysi turkumga kiradi?",["Ot","Sifat","Fe'l","Son"],0]],
+      m:[["\"O'tkan kunlar\" romani muallifi?",["Abdulla Qodiriy","Cho'lpon","Oybek","G'afur G'ulom"],0],["\"Xamsa\" muallifi?",["Alisher Navoiy","Bobur","Fuzuliy","Mashrab"],0]],
+      h:[["Gapning bosh bo'laklari?",["Ega va kesim","Aniqlovchi va hol","To'ldiruvchi va hol","Ega va to'ldiruvchi"],0],["\"Mehrobdan chayon\" muallifi?",["Abdulla Qodiriy","Abdulla Qahhor","Oybek","Hamza"],0]]},
+ uzt:{e:[["\"Kitob\" so'zining ko'plik shakli?",["Kitoblar","Kitobi","Kitobni","Kitobda"],0],["\"Maktab\" so'zida nechta unli bor?",["1","2","3","0"],0]],
+      m:[["\"Uch\" qaysi turkum?",["Son","Ot","Sifat","Olmosh"],0],["\"Ular\" so'zi qaysi turkum?",["Olmosh","Ot","Fe'l","Ravish"],0]],
+      h:[["Fe'l zamonlari nechta?",["3","2","4","5"],0],["Egalik qo'shimchasi qaysi?",["-im","-ni","-da","-ga"],0]]},
+ uzb:{e:[["Amir Temur tug'ilgan yil?",["1336","1405","1370","1250"],0],["O'zbekiston mustaqillik yili?",["1991","1990","1992","1989"],0]],
+      m:[["Mirzo Ulug'bek rasadxonasi qayerda?",["Samarqand","Buxoro","Xiva","Toshkent"],0],["Jaloliddin Manguberdi kimga qarshi kurashgan?",["Mo'g'ullar","Arablar","Eroniylar","Ruslar"],0]],
+      h:[["O'zbekiston Konstitutsiyasi qabul qilingan sana?",["1992-yil 8-dekabr","1991-yil 31-avgust","1993-yil 1-yanvar","1990-yil 20-iyun"],0],["Boburiylar davlatiga kim asos solgan?",["Bobur","Humoyun","Akbar","Shoh Jahon"],0]]},
+ jah:{e:[["Ikkinchi jahon urushi qaysi yil tugagan?",["1945","1939","1918","1950"],0],["Birinchi jahon urushi qachon boshlangan?",["1914","1918","1905","1939"],0]],
+      m:[["Buyuk Fransuz inqilobi yili?",["1789","1689","1815","1848"],0],["Kolumb Amerikaga qaysi yil yetib borgan?",["1492","1453","1517","1600"],0]],
+      h:[["Berlin devori qaysi yil qulagan?",["1989","1991","1961","1975"],0],["Yevropada Uyg'onish davri qaysi mamlakatda boshlangan?",["Italiya","Angliya","Rossiya","Ispaniya"],0]]},
+ ing:{e:[["\"Apple\" so'zining tarjimasi?",["Olma","Nok","Uzum","Anor"],0],["\"Hello\" nima degani?",["Salom","Xayr","Rahmat","Iltimos"],0]],
+      m:[["\"Go\" fe'lining Past Simple shakli?",["went","gone","goed","going"],0],["She ___ a student.",["is","are","am","be"],0]],
+      h:[["If I ___ rich, I would travel the world.",["were","am","will be","have been"],0],["She has already ___ lunch.",["eaten","ate","eat","eating"],0]]},
+ ped:{e:[["Pedagogika nimani o'rganadi?",["Ta'lim-tarbiya jarayonini","Hayvonlarni","Yulduzlarni","Narxlarni"],0],["Psixologiya nimani o'rganadi?",["Ruhiyatni","Iqlimni","Moddani","Tilni"],0]],
+      m:[["Didaktika nima?",["Ta'lim nazariyasi","Tarbiya nazariyasi","Yosh davrlari","Boshqaruv"],0],["Ta'limning asosiy shakllaridan biri?",["Dars","Sayr","O'yin","Dam olish"],0]],
+      h:[["\"Yaqin rivojlanish zonasi\" tushunchasi muallifi?",["L. Vigotskiy","J. Piaje","B. Skinner","Z. Freyd"],0],["Piajening kognitiv rivojlanish bosqichlari soni?",["4","3","5","6"],0]]},
+ kas:{e:[["Metodika nimani o'rganadi?",["O'qitish usullarini","Tarixni","Iqlimni","Moliyani"],0],["Dars rejasi nima uchun kerak?",["Darsni tartibli o'tkazish uchun","Imtihon uchun","Maosh uchun","Reklama uchun"],0]],
+      m:[["Bloom taksonomiyasida eng yuqori daraja?",["Yaratish","Eslash","Tushunish","Qo'llash"],0],["Mustaqil ish nima?",["O'quvchining o'zi bajaradigan topshiriq","Imtihon","Sinf yig'ini","Ota-onalar majlisi"],0]],
+      h:[["Bloom taksonomiyasida nechta daraja bor?",["6","4","5","8"],0],["Kompetensiya nima?",["Bilim, ko'nikma va shaxsiy sifatlar birligi","Faqat bilim","Faqat malaka","Faqat diplom"],0]]},
+ huq:{e:[["Konstitutsiya nima?",["Davlatning asosiy qonuni","Oddiy qaror","Farmoyish","Buyruq"],0],["Fuqaro to'liq muomala layoqatiga necha yoshda ega bo'ladi?",["18","16","21","14"],0]],
+      m:[["Qonun chiqaruvchi organ?",["Oliy Majlis","Vazirlar Mahkamasi","Sud","Prokuratura"],0],["Huquqbuzarlik nima?",["Huquqqa zid qilmish","Qonun loyihasi","Saylov","Shartnoma"],0]],
+      h:[["O'zbekiston Prezidenti saylanish muddati?",["7 yil","5 yil","4 yil","10 yil"],0],["Jinoyat va ma'muriy huquqbuzarlikning farqi?",["Jamoat xavfliligi darajasi","Sana","Hudud","Yosh"],0]]},
+ iqt:{e:[["O'zbekiston milliy valyutasi?",["So'm","Dollar","Rubl","Yevro"],0],["Bozorda narxni nima belgilaydi?",["Talab va taklif","Ob-havo","Moda","Vaqt"],0]],
+      m:[["Inflyatsiya nima?",["Narxlarning umumiy o'sishi","Narx tushishi","Ish haqi","Soliq"],0],["YaIM nimani bildiradi?",["Yalpi ichki mahsulot","Yillik ish haqi","Yangi iqtisodiy model","Yagona ish markazi"],0]],
+      h:[["Monopoliya nima?",["Bozorda bitta sotuvchi","Ko'p sotuvchi","Davlat soligi","Eksport"],0],["Muvozanat narx qayerda aniqlanadi?",["Talab va taklif kesishgan nuqtada","Faqat talabda","Faqat taklifda","Davlat belgilaydi"],0]]},
+ pra:{e:[["Svetoforning qizil chirog'i nimani bildiradi?",["To'xtash","Yurish","Tezlatish","Ogohlantirish"],0],["Piyodalar o'tish joyi qanday nomlanadi?",["Zebra","Chorraha","Burilish","To'siq"],0]],
+      m:[["Taqiqlovchi belgilar qanday shaklda?",["Qizil aylana","Ko'k kvadrat","Sariq uchburchak","Yashil romb"],0],["Xavfsizlik kamari kimlar uchun majburiy?",["Haydovchi va yo'lovchilar","Faqat haydovchi","Faqat old o'rindiq","Hech kim"],0]],
+      h:[["Teng ahamiyatli chorrahada kimga yo'l beriladi?",["O'ng tomondan kelayotganga","Chap tomondan kelayotganga","Eng katta mashinaga","Birinchi kelganga"],0],["To'xtash va to'xtab turish farqi nimada?",["Vaqt davomiyligida","Rangida","Belgisida","Farq yo'q"],0]]}
+};
+
+/* Matematika: 30 tadan savol dasturiy yaratiladi (doimiy, takrorlanmas) */
+function genMath(){
+  let seed=2026; const r=()=>(seed=(seed*1664525+1013904223)%4294967296)/4294967296;
+  const ri=(a,b)=>a+Math.floor(r()*(b-a+1));
+  const mk=(q,ans)=>{
+    const set=new Set([ans]); const offs=[1,-1,2,-2,3,-3,5,-5,10,-10];
+    while(set.size<4){set.add(ans+offs[ri(0,offs.length-1)]*(Math.abs(ans)>50?ri(1,3):1))}
+    const opts=[...set]; for(let i=opts.length-1;i>0;i--){const j=ri(0,i);[opts[i],opts[j]]=[opts[j],opts[i]]}
+    return [q,opts.map(String),opts.indexOf(ans)];
+  };
+  const out={e:[],m:[],h:[]}, seen=new Set();
+  const fill=(k,fn)=>{let g=0;while(out[k].length<POOL&&g++<500){const x=fn(g);if(!seen.has(x[0])){seen.add(x[0]);out[k].push(mk(x[0],x[1]))}}};
+  fill("e",g=>{const t=g%4,a=ri(11,60),b=ri(2,40);
+    if(t==0)return[`${a} + ${b} = ?`,a+b]; if(t==1)return[`${a+b} − ${b} = ?`,a];
+    if(t==2){const x=ri(3,12),y=ri(3,12);return[`${x} × ${y} = ?`,x*y]} const y=ri(3,12),z=ri(3,15);return[`${y*z} ÷ ${y} = ?`,z]});
+  fill("m",g=>{const t=g%4;
+    if(t==0){const x=ri(2,15),a=ri(2,9),b=ri(1,20);return[`${a}x + ${b} = ${a*x+b} bo'lsa, x = ?`,x]}
+    if(t==1){const p=[10,20,25,50][ri(0,3)],n=ri(2,20)*20;return[`${n} ning ${p}% i nechaga teng?`,n*p/100]}
+    if(t==2){const a=ri(11,25);return[`${a}² = ?`,a*a]} const a=ri(2,9),b=ri(2,9);return[`${a}·${b}² + ${a} = ?`,a*b*b+a]});
+  fill("h",g=>{const t=g%4;
+    if(t==0){const p=ri(1,9),q=ri(1,9);return[`x² − ${p+q}x + ${p*q} = 0 tenglama ildizlari ko'paytmasi?`,p*q]}
+    if(t==1){const n=ri(3,5),x=ri(2,4);return[`f(x) = x${["","","²","³","⁴","⁵"][n]} bo'lsa, f′(${x}) = ?`,n*Math.pow(x,n-1)]}
+    if(t==2){const n=ri(5,14);return[`${n} ta elementdan 2 tasini tanlash usullari soni C(${n},2) = ?`,n*(n-1)/2]}
+    const a=ri(1,9),d=ri(2,7),n=ri(8,20);return[`Arifmetik progressiya: a₁=${a}, d=${d}. a${n} = ?`,a+(n-1)*d]});
+  return out;
+}
+B.mat=genMath();
+
+/* ================== HOLAT ================== */
+const tg = window.Telegram && window.Telegram.WebApp;
+if(tg){try{tg.ready();tg.expand();tg.setHeaderColor("#0f1830");tg.setBackgroundColor("#0f1830")}catch(e){}}
+const U = (tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)||{};
+const KEY="milliy_testlar_hist_"+(U.id||"guest");
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}};
+const save=h=>{try{localStorage.setItem(KEY,JSON.stringify(h))}catch(e){}};
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sub=id=>S.find(s=>s.id===id);
+const W={e:1,m:2,h:3};
+
+/* ================== INTERFEYS ================== */
+function renderUser(){
+  const name=[U.first_name,U.last_name].filter(Boolean).join(" ")||"Foydalanuvchi";
+  ["uname","uname2"].forEach(i=>$(i).textContent=name);
+  ["av","av2"].forEach(i=>{const el=$(i); if(U.photo_url){el.innerHTML=`<img src="${U.photo_url}" alt="">`}else el.textContent=name[0].toUpperCase()});
+  $("uid").textContent=U.username?("@"+U.username):(U.id?("ID: "+U.id):"");
+}
+function stats(){
+  const h=load(); let ball=0,och=0,ok=0,tot=0;
+  h.forEach(x=>{ball+=x.c;och+=x.p;ok+=x.c;tot+=x.t});
+  const avg=tot?Math.round(ok/tot*100):0;
+  $("s-ball").textContent=ball; $("s-och").innerHTML=och; $("s-test").textContent=h.length;
+  $("p-ball").textContent=ball; $("p-och").textContent=och; $("p-test").textContent=h.length;
+  $("p-ok").textContent=ok; $("p-avg").textContent=avg+"%";
+}
+function renderGrid(){
+  $("grid").innerHTML=S.map(s=>`<div class="card glass" onclick="openSheet('${s.id}')">${icon(s)}<div><div class="n">${s.name}</div><div class="d" style="margin-top:5px">${DESC}</div></div></div>`).join("");
+  $("tlist").innerHTML=S.map(s=>`<div class="row glass" onclick="openSheet('${s.id}')">${icon(s)}<div class="m"><div class="n">${s.name}</div><div class="d">${DESC}</div></div><div class="chev">›</div></div>`).join("");
+}
+function renderHist(){
+  const h=load().slice().reverse();
+  if(!h.length){$("hlist").innerHTML='<div class="empty">Hali test ishlanmagan.<br>Fan tanlab, birinchi testingizni boshlang.</div>';return}
+  $("hlist").innerHTML=h.map(x=>{const s=sub(x.s);const pc=Math.round(x.c/x.t*100);
+    return `<div class="row glass" style="cursor:default">${icon(s)}<div class="m"><div class="n">${s.name}</div><div class="d">${x.m} · ${x.d}</div></div><div style="text-align:right"><div class="hs" style="color:${pc>=70?"var(--ok)":pc>=40?"var(--gold)":"var(--bad)"}">${pc}%</div><div class="d">${x.c}/${x.t} · +${x.p} ochko</div></div></div>`}).join("");
+}
+function go(v){
+  document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on",e.id==="v-"+v));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  if(v==="hist")renderHist(); if(v==="home"||v==="prof")stats();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.v));
+
+function openSheet(id){
+  const s=sub(id), b=B[id];
+  let h=`<div class="hd">${icon(s)}<div><div style="font-size:19px;font-weight:700">${s.name}</div><div class="d" style="color:var(--mut);font-size:12px;margin-top:3px">Test turini o'zingiz tanlang</div></div></div>`;
+  const mixN=Math.min(COMP.e,b.e.length)+Math.min(COMP.m,b.m.length)+Math.min(COMP.h,b.h.length);
+  h+=`<button class="opt gold" onclick="start('${id}','mix')"><div>Aralash test<small>${DESC}</small></div><span>${mixN} ta ›</span></button>`;
+  ["e","m","h"].forEach(k=>{h+=`<button class="opt" onclick="start('${id}','${k}')"><div><span class="dot" style="background:${LV[k][1]}"></span>${LV[k][0]} savollar<small>Bankda ${POOL} tagacha savol</small></div><span>${b[k].length} ta ›</span></button>`});
+  $("sheet").innerHTML=h; $("ov").classList.add("on");
+}
+function closeSheet(){$("ov").classList.remove("on")}
+
+/* ================== TEST ================== */
+let Q=null;
+function start(id,mode){
+  const b=B[id]; let list=[];
+  if(mode==="mix"){["e","m","h"].forEach(k=>shuffle(b[k]).slice(0,COMP[k]).forEach(q=>list.push({q,k})))}
+  else list=shuffle(b[mode]).slice(0,POOL).map(q=>({q,k:mode}));
+  if(!list.length){toast("Bu bo'limda savollar yo'q");return}
+  list=list.map(x=>{const idx=shuffle(x.q[1].map((t,i)=>i));return{k:x.k,t:x.q[0],o:idx.map(i=>x.q[1][i]),a:idx.indexOf(x.q[2])}});
+  Q={id,mode,list,i:0,c:0,p:0,done:false};
+  closeSheet(); $("quiz").classList.add("on"); showQ();
+}
+function showQ(){
+  const x=Q.list[Q.i], n=Q.list.length;
+  $("quiz").innerHTML=`<div class="qtop"><div class="x glass" onclick="quit()">✕</div><div class="bar"><i style="width:${Q.i/n*100}%"></i></div><span class="pill">${Q.i+1}/${n}</span></div>
+  <div class="qb"><div class="qmeta"><span>${sub(Q.id).name}</span><span style="color:${LV[x.k][1]}">● ${LV[x.k][0]}</span></div>
+  <div class="qt glass">${x.t}</div>
+  <div id="ans">${x.o.map((t,i)=>`<button class="ans" onclick="pick(${i})">${t}</button>`).join("")}</div>
+  <button class="btn" id="nx" style="display:none" onclick="nextQ()">${Q.i===n-1?"Natijani ko'rish":"Keyingisi"}</button></div>`;
+  window.scrollTo(0,0);
+}
+function pick(i){
+  const x=Q.list[Q.i], bs=document.querySelectorAll(".ans");
+  bs.forEach((b,j)=>{b.disabled=true;if(j===x.a)b.classList.add("ok");else if(j===i)b.classList.add("bad")});
+  if(i===x.a){Q.c++;Q.p+=W[x.k];sfx.ok()}else sfx.bad();
+  $("nx").style.display="flex";
+}
+function nextQ(){Q.i++; if(Q.i>=Q.list.length)finish(); else showQ()}
+function quit(){ if(confirm("Testni tugatmasdan chiqasizmi? Natija saqlanmaydi.")){$("quiz").classList.remove("on");Q=null} }
+function finish(){
+  const n=Q.list.length, pc=Math.round(Q.c/n*100);
+  const d=new Date(), ds=d.toLocaleDateString("uz-UZ")+" "+d.toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"});
+  const mname=Q.mode==="mix"?"Aralash":LV[Q.mode][0];
+  const h=load(); h.push({s:Q.id,m:mname,c:Q.c,t:n,p:Q.p,d:ds}); save(h);
+  sfx.done(); const col=pc>=70?"#35c46a":pc>=40?"#f2b01e":"#e5484d";
+  $("quiz").innerHTML=`<div class="res"><div style="color:var(--mut)">${sub(Q.id).name} · ${mname}</div>
+  <div class="ring" style="background:conic-gradient(${col} ${pc*3.6}deg,rgba(255,255,255,.1) 0)"><span>${pc}%</span></div>
+  <div style="font-size:20px;font-weight:700">${Q.c} / ${n} to'g'ri</div>
+  <div style="color:var(--gold);margin-top:8px;font-weight:600">+${Q.p} ochko · +${Q.c} ball</div>
+  <button class="btn" onclick="start('${Q.id}','${Q.mode}')">Qayta ishlash</button>
+  <button class="btn sec" onclick="closeQuiz()">Yopish</button></div>`;
+}
+function closeQuiz(){$("quiz").classList.remove("on");Q=null;stats();renderHist()}
+function resetAll(){ if(confirm("Barcha natijalar o'chiriladi. Davom etasizmi?")){save([]);stats();renderHist();toast("Tozalandi")} }
+function toast(t){const e=$("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",1800)}
+
+/* ================== SFX (yengil ovozlar) ================== */
+let AC=null, SND=true;
+try{SND=localStorage.getItem("mt_snd")!=="0"}catch(e){}
+function tone(f,d,type,v,delay){
+  if(!SND)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended")AC.resume();
+    const t=AC.currentTime+(delay||0), o=AC.createOscillator(), g=AC.createGain();
+    o.type=type||"sine"; o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v||0.05,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+0.02);
+  }catch(e){}
+}
+const sfx={
+  tap:()=>tone(620,.06,"triangle",.035),
+  ok:()=>{tone(660,.12,"sine",.05);tone(880,.18,"sine",.05,.09)},
+  bad:()=>{tone(220,.18,"triangle",.05);tone(165,.25,"triangle",.05,.12)},
+  done:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.22,"sine",.05,i*.11))
+};
+function toggleSnd(){SND=!SND;try{localStorage.setItem("mt_snd",SND?"1":"0")}catch(e){} $("snd").textContent=SND?"🔊":"🔇"; if(SND)sfx.tap()}
+document.addEventListener("pointerdown",e=>{ if(e.target.closest(".ans")||e.target.closest("#snd"))return; if(e.target.closest("button,.card,.row,.x"))sfx.tap() });
+
+renderUser(); renderGrid(); stats(); $("snd").textContent=SND?"🔊":"🔇";
+</script>
+</body>
+</html>
